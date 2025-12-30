@@ -3,5 +3,6 @@ resource "aws_instance" "cm" {
   instance_type = var.instance_type_value
   tags = {
     Name = "AWS-Jenkins-Server"
+    Created_by ="Chintha"
   }
 }
