@@ -1,9 +1,13 @@
+provider "aws" {
+  region = "us-east-1"
+}
 resource "aws_instance" "cm" {
-  ami           = var.ami_value
-  instance_type = var.instance_type_value
-  subnet_id= var.subnet_id_value
+  ami           = "ami-068c0051b15cdb816"
+  instance_type = "m7i-flex.large"
+  user_data     = file("jenkins.sh")
   tags = {
-    Name = "AWS-Jenkins-Server"
-    Created_by ="Chintha"
+    Name       = "AWS-Jenkins-Server"
+    Created_by = "Chintha"
+    Owner      = "Oracle"
   }
 }
