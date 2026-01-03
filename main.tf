@@ -11,3 +11,16 @@ resource "aws_instance" "cm" {
     Owner      = "Oracle"
   }
 }
+resource "aws_ebs_volume" "jenkins" {
+  availability_zone = "us-east-1c"
+  size              = "44"
+
+  tags = {
+    Name = "jenkins"
+  }
+}
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/sdh"
+  volume_id   = aws_ebs_volume.jenkins.id
+  instance_id = aws_instance.cm.id
+}
