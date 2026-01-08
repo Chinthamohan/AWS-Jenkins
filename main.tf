@@ -1,26 +1,44 @@
 provider "aws" {
   region = "us-east-1"
 }
-resource "aws_instance" "cm" {
-  ami           = "ami-068c0051b15cdb816"
-  instance_type = "m7i-flex.large"
-  user_data     = file("jenkins.sh")
-  tags = {
-    Name       = "AWS-Jenkins-Server"
-    Created_by = "Chintha"
-    Owner      = "Oracle"
+resource "aws_security_group" "cm-sg" {
+  name        = "allow_web_and_ssh"
+  description = "Allow SSH, HTTP, HTTPS, and 8080"
+
+  # Ingress Rules (Incoming Traffic)
+  ingress {
+    description = "SSH from anywhere"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-}
-resource "aws_ebs_volume" "jenkins" {
-  availability_zone = "us-east-1c"
-  size              = "44"
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "App Port 8080"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Egress Rules (Outgoing Traffic)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" # -1 means all protocols
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   tags = {
-    Name = "jenkins"
+    Name = "Chintha-SG"
   }
-}
-resource "aws_volume_attachment" "ebs_att" {
-  device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.jenkins.id
-  instance_id = aws_instance.cm.id
 }
