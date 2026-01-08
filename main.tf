@@ -4,7 +4,7 @@ provider "aws" {
 data "aws_security_group" "existing_sg" {
   filter {
     name   = "group-name"
-    values = ["allow_web_and_ssh"] # Replace with your actual SG name
+    values = ["chintha-sg"]
   }
 }
 data "aws_ami" "amazon_linux_2" {
