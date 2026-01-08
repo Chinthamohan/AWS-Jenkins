@@ -1,44 +1,28 @@
 provider "aws" {
   region = "us-east-1"
 }
-resource "aws_security_group" "cm-sg" {
-  name        = "allow_web_and_ssh"
-  description = "Allow SSH, HTTP, HTTPS, and 8080"
-
-  # Ingress Rules (Incoming Traffic)
-  ingress {
-    description = "SSH from anywhere"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+data "aws_security_group" "existing_sg" {
+  filter {
+    name   = "group-name"
+    values = ["allow_web_and_ssh"] # Replace with your actual SG name
   }
+}
+data "aws_ami" "amazon_linux_2" {
+  most_recent = true
+  owners      = ["amazon"]
 
-  ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
+}
 
-  ingress {
-    description = "App Port 8080"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Egress Rules (Outgoing Traffic)
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1" # -1 means all protocols
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_instance" "web_server" {
+  ami           = data.aws_ami.amazon_linux_2.id
+  instance_type = "t3.micro"
+  vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
 
   tags = {
-    Name = "Chintha-SG"
+    Name = "Data-Source-Instance"
   }
 }
