@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-1"
 }
 resource "aws_security_group" "cm-sg" {
-  name        = "allow_web_and_ssh"
+  name        = "chintha-sg"
   description = "Allow SSH, HTTP, HTTPS, and 8080"
 
   # Ingress Rules (Incoming Traffic)
@@ -39,6 +39,6 @@ resource "aws_security_group" "cm-sg" {
   }
 
   tags = {
-    Name = "Chintha-SG"
+    Name = "chintha-sg"
   }
 }
