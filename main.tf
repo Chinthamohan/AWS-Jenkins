@@ -23,6 +23,6 @@ resource "aws_instance" "web_server" {
   vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
 
   tags = {
-    Name = "Data-Source-Instance"
+    Name = "Sg-Instance"
   }
 }
